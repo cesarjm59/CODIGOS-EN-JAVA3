@@ -1,0 +1,6 @@
+Ricardo Gareca, 12.0, 11.5, 13.0
+Milagros Flores, 18.5, 19.0, 17.0
+Walter Flores, 10.0, 09.5, 11.0
+Gabriela Benites, 16.0, 17.5, 16.5
+Alonso Chumpitaz, 14.0, 13.0, 15.0
+Paolo Guerrero, 07.5, 08.0, 09.0

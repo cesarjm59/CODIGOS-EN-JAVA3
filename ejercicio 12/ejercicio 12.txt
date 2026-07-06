@@ -1,0 +1,153 @@
+import java.io.*;
+import java.util.ArrayList;
+import java.util.Scanner;
+class SistemaAcademico {
+    public static class Alumno {
+        String nombre;
+        double PC1, Parcial_1, EC1; 
+        double PC2, Parcial_Final, EC2;  
+        double Nota_final, EP1, EP2; 
+    }
+
+    public static boolean verificarLogin(String userInput, String passInput) {
+        File archivo = new File("usuarios.txt");
+        if (!archivo.exists()) {
+            System.err.println("Error: No se pudo encontrar la base de datos usuarios.txt");
+            return false;
+        }
+
+        try (BufferedReader br = new BufferedReader(new FileReader(archivo))) {
+            String linea;
+            while ((linea = br.readLine()) != null) {
+                if (linea.trim().isEmpty()) continue;
+                
+                String[] partes = linea.trim().split("\\s+");
+                if (partes.length == 2) {
+                    String userDb = partes[0];
+                    String passDb = partes[1];
+                    
+                    if (userDb.equals(userInput) && passDb.equals(passInput)) {
+                        return true;
+                    }
+                }
+            }
+        } catch (IOException e) {
+            System.err.println("Error al leer la base de datos de usuarios: " + e.getMessage());
+        }
+        return false;
+    }
+
+    public static double solicitarNota(String mensaje, Scanner scanner) {
+        double nota;
+        while (true) {
+            System.out.print(mensaje);
+            while (!scanner.hasNextDouble()) {
+                System.out.println("[!] Error: Debe ingresar un valor numérico.");
+                System.out.print(mensaje);
+                scanner.next();
+            }
+            nota = scanner.nextDouble();
+            if (nota >= 0 && nota <= 20) {
+                return nota;
+            }
+            System.out.println("[!] Error: La nota debe estar entre 0 y 20. Intente de nuevo.");
+        }
+    }
+
+    public static void main(String[] args) {
+        Scanner scanner = new Scanner(System.in);
+        
+        String inputUsuario, inputPassword;
+        System.out.println("---AUTENTICACION REQUERIDA---");
+        System.out.print("Usuario: ");
+        inputUsuario = scanner.next();
+        System.out.print("Contrasena: ");
+        inputPassword = scanner.next();
+
+        if (!verificarLogin(inputUsuario, inputPassword)) {
+            System.out.println("\n[!] Acceso denegado. Credenciales incorrectas o usuario no registrado.");
+            scanner.close();
+            return; 
+        }
+
+        System.out.println("\n[Acceso concedido]\n");
+
+        try (BufferedWriter salidaPromedios = new BufferedWriter(new FileWriter("Promedio.txt"));
+             BufferedWriter salidaNotas = new BufferedWriter(new FileWriter("Notas.txt"))) {
+
+            System.out.println("--- SISTEMA DE GESTION ACADEMICA ---");
+            System.out.print("¿Cuántos alumnos desea registrar/procesar?: ");
+            int cantidadAlumnos = scanner.nextInt();
+
+            ArrayList<Alumno> lista = new ArrayList<>();
+
+            for (int i = 0; i < cantidadAlumnos; i++) {
+                Alumno p = new Alumno();
+                
+                scanner.nextLine(); 
+
+                System.out.println("\n=========================================");
+                System.out.println("Datos del Alumno #" + (i + 1) + " de " + cantidadAlumnos);
+                System.out.print("Ingrese el NOMBRE COMPLETO del alumno: ");
+                p.nombre = scanner.nextLine(); 
+
+                System.out.println("\n--- NOTAS EVALUACION 1 (EP1) ---");
+                p.EC1 = solicitarNota("Ingrese nota EC1: ", scanner);
+                p.PC1 = solicitarNota("Ingrese nota PC1: ", scanner);
+                p.Parcial_1 = solicitarNota("Ingrese nota Parcial 1: ", scanner);
+
+                System.out.println("\n--- NOTAS EVALUACION 2 (EP2) ---");
+                p.EC2 = solicitarNota("Ingrese nota EC2: ", scanner);
+                p.PC2 = solicitarNota("Ingrese nota PC2: ", scanner);
+                p.Parcial_Final = solicitarNota("Ingrese nota Parcial Final: ", scanner);
+
+                p.EP1 = (p.EC1 * 0.15) + (p.PC1 * 0.40) + (p.Parcial_1 * 0.45);
+                p.EP2 = (p.EC2 * 0.15) + (p.PC2 * 0.40) + (p.Parcial_Final * 0.45);
+                p.Nota_final = (p.EP1 + p.EP2) / 2.0;
+
+                lista.add(p);
+            }
+
+            salidaPromedios.write("REPORTE DE NOTAS PROCESADAS\n");
+            salidaPromedios.write("Usuario / Profesor: " + inputUsuario + "\n");
+            salidaPromedios.write("----------------------\n");
+
+            salidaNotas.write("REGISTRO GENERAL DE NOTAS INGRESADAS\n");
+            salidaNotas.write("Usuario / Profesor: " + inputUsuario + "\n");
+            salidaNotas.write("----------------------\n");
+
+            for (Alumno alumno : lista) {
+                salidaPromedios.write("Alumno: " + alumno.nombre + "\n");
+                salidaPromedios.write(String.format("EP1: %.2f\n", alumno.EP1));
+                salidaPromedios.write(String.format("EP2: %.2f\n", alumno.EP2));
+                salidaPromedios.write(String.format("Promedio Final: %.2f\n", alumno.Nota_final));
+
+                if (alumno.Nota_final > 10.5) {
+                    salidaPromedios.write("Estado: APROBADO");
+                } else if (alumno.Nota_final >= 9.5) {
+                    salidaPromedios.write("Estado: SUSTITUTORIO");
+                } else {
+                    salidaPromedios.write("Estado: DESAPROBADO");
+                }
+                salidaPromedios.write("\n-------------------------\n");
+
+                salidaNotas.write("Alumno: " + alumno.nombre + "\n");
+                salidaNotas.write(String.format("Notas EP1 -> EC1: %.2f | PC1: %.2f | Parcial 1: %.2f\n", 
+                        alumno.EC1, alumno.PC1, alumno.Parcial_1));
+                salidaNotas.write(String.format("Notas EP2 -> EC2: %.2f | PC2: %.2f | Parcial Final: %.2f\n", 
+                        alumno.EC2, alumno.PC2, alumno.Parcial_Final));
+                salidaNotas.write("-------------------------\n");
+            }
+
+            System.out.println("\n[!] Proceso terminado con éxito.");
+            System.out.println(" -> Se procesaron " + cantidadAlumnos + " alumnos.");
+            System.out.println(" -> Archivo 'Notas.txt' generado con éxito.");
+            System.out.println(" -> Archivo 'Promedio.txt' generado con éxito.");
+
+        } catch (IOException e) {
+            System.out.println("Error al crear o escribir en los archivos de salida (Promedio.txt o Notas.txt).");
+        } finally {
+            scanner.close();
+        }
+    }
+}

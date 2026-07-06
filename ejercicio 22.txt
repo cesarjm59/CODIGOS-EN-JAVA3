@@ -1,0 +1,24 @@
+import java.util.Scanner;
+public class INVERTIDO {
+    public static void main(String[] args) {
+        Scanner scanner = new Scanner(System.in);
+        
+        System.out.print("Ingrese un número entero para invertir: ");
+        int numero = scanner.nextInt();
+
+        int resultado = invertirDigitos(numero);
+        System.out.println("El número con los dígitos invertidos es: " + resultado);
+
+        scanner.close();
+    }
+    public static int invertirDigitos(int numero) {
+        int invertido = 0;
+        
+        while (numero != 0) {
+            int ultimoDigito = numero % 10;         
+            invertido = (invertido * 10) + ultimoDigito; 
+            numero = numero / 10;                    
+        }
+        return invertido;
+    }
+}

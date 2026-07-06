@@ -1,0 +1,6 @@
+Laptop Asus, 2500.0, 4, 10
+Mouse Logi, 80.0, 20, 5
+Monitor 24, 600.0, 6, 15
+Teclado Gamer, 150.0, 12, 0
+Impresora HP, 450.0, 3, 8
+Audifonos Sony, 320.0, 15, 20

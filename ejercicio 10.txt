@@ -1,0 +1,29 @@
+import java.util.ArrayList;
+import java.util.Scanner;
+class VECTOR_DINAMICO {
+    public static void main(String[] args) {
+        Scanner consola = new Scanner(System.in);
+        ArrayList<Integer> vectorDinamico = new ArrayList<>();
+
+        System.out.println("Introduce números enteros en tu vector dinámico.");
+        System.out.println("Para detener el ingreso, introduce un número negativo:");
+
+        while (true) {
+            System.out.print("Ingrese un valor: ");
+            int valor = consola.nextInt();
+
+            if (valor < 0) {
+                break;
+            }
+            vectorDinamico.add(valor);
+        }
+
+        System.out.println("\nEl tamaño final de tu vector es: " + vectorDinamico.size());
+
+        System.out.print("Su vector dinamico es: [ ");
+        for (int i = 0; i < vectorDinamico.size(); i++) {
+            System.out.print(vectorDinamico.get(i) + " ");
+        }
+        System.out.println("]");
+    }
+}

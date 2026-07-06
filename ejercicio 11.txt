@@ -1,0 +1,39 @@
+public class PruebaReferencia {
+    public static class Numero {
+        int valor;
+
+        public Numero(int valor) {
+            this.valor = valor;
+        }
+
+        @Override
+        public String toString() {
+            return String.valueOf(valor);
+        }
+    }
+    
+    public static void intercambiar(Numero n1, Numero n2) {
+        int aux = n1.valor;
+        n1.valor = n2.valor;
+        n2.valor = aux;
+        
+    }
+    public static void main(String[] args) {
+        System.out.println("=== INTERCAMBIO DE VALORES SIMULANDO REFERENCIA ===");
+        Numero a = new Numero(15);
+        Numero b = new Numero(80);
+
+        System.out.println("\n[Antes del intercambio]:");
+        System.out.println("Variable A = " + a);
+        System.out.println("Variable B = " + b);
+
+        intercambiar(a, b);
+
+        System.out.println("\n[Después del intercambio]:");
+        System.out.println("Variable A = " + a);
+        System.out.println("Variable B = " + b);
+        
+        System.out.println("\n---------------------------------------------------");
+        System.out.println("[INFO] Intercambio exitoso gracias al uso de envolturas de objeto.");
+    }
+}

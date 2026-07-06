@@ -1,0 +1,103 @@
+import java.io.*;
+import java.util.ArrayList;
+class GestionInventario {
+    public static class Producto {
+        String nombre;
+        double precioOriginal;
+        int cantidad;
+        double porcentajeDescuento;
+        
+        double precioFinal;
+        double totalPorProducto;
+
+        public Producto(String nombre, double precioOriginal, int cantidad, double porcentajeDescuento) {
+            this.nombre = nombre;
+            this.precioOriginal = precioOriginal;
+            this.cantidad = cantidad;
+            this.porcentajeDescuento = porcentajeDescuento;
+            
+            double descuentoEnSoles = this.precioOriginal * (this.porcentajeDescuento / 100.0);
+            this.precioFinal = this.precioOriginal - descuentoEnSoles;
+            this.totalPorProducto = this.precioFinal * this.cantidad;
+        }
+    }
+
+    public static void main(String[] args) {
+        String archivoOrigen = "productos.txt";
+        String archivoReporte = "reporte_final.txt";
+
+        System.out.println("=== INICIANDO GESTIÓN DE INVENTARIO ===");
+
+        crearArchivoDatosPrueba(archivoOrigen);
+
+        ArrayList<Producto> listaDeProductos = new ArrayList<>();
+
+        System.out.println("[1] Leyendo el archivo '" + archivoOrigen + "'...");
+        try (BufferedReader lector = new BufferedReader(new FileReader(archivoOrigen))) {
+            String linea;
+            while ((linea = lector.readLine()) != null) {
+                if (linea.trim().isEmpty()) {
+                    continue;
+                }
+
+                String[] partes = linea.split(",");
+                if (partes.length == 4) {
+                    String nombre = partes[0].trim();
+                    double precio = Double.parseDouble(partes[1].trim());
+                    int cantidad = Integer.parseInt(partes[2].trim());
+                    double descuento = Double.parseDouble(partes[3].trim());
+
+                    Producto prod = new Producto(nombre, precio, cantidad, descuento);
+                    listaDeProductos.add(prod);
+                }
+            }
+        } catch (IOException e) {
+            System.out.println("[ERROR] No se pudo leer el archivo: " + e.getMessage());
+            return;
+        }
+
+        System.out.println("[2] Generando el reporte final en '" + archivoReporte + "'...");
+        try (BufferedWriter escritor = new BufferedWriter(new FileWriter(archivoReporte))) {
+            
+            escritor.write("====================================================================\n");
+            escritor.write("                      REPORTE FINAL DE INVENTARIO                   \n");
+            escritor.write("====================================================================\n");
+            escritor.write(String.format("%-15s | %-10s | %-8s | %-7s | %-12s\n", 
+                    "PRODUCTO", "P. ORIG", "CANTIDAD", "DESC.", "TOTAL NETO"));
+            escritor.write("--------------------------------------------------------------------\n");
+
+            double granTotalInventario = 0.0;
+
+            for (Producto p : listaDeProductos) {
+                escritor.write(String.format("%-15s | S/.%-7.2f | %-8d | %-5.0f%% | S/.%-10.2f\n",
+                        p.nombre, p.precioOriginal, p.cantidad, p.porcentajeDescuento, p.totalPorProducto));
+                granTotalInventario += p.totalPorProducto;
+            }
+
+            escritor.write("--------------------------------------------------------------------\n");
+            escritor.write(String.format("VALOR TOTAL DEL INVENTARIO EN TIENDA:                  S/.%.2f\n", granTotalInventario));
+            escritor.write("====================================================================\n");
+
+            System.out.println("[OK] ¡Proceso completado con éxito!");
+            System.out.println(" -> Abre el archivo '" + archivoReporte + "' para ver los resultados.");
+
+        } catch (IOException e) {
+            System.out.println("[ERROR] No se pudo escribir el reporte: " + e.getMessage());
+        }
+    }
+
+    public static void crearArchivoDatosPrueba(String ruta) {
+        File archivo = new File(ruta);
+        if (!archivo.exists()) {
+            try (BufferedWriter bw = new BufferedWriter(new FileWriter(archivo))) {
+                bw.write("Laptop Asus, 2500.0, 4, 10\n");
+                bw.write("Mouse Logi, 80.0, 20, 5\n");
+                bw.write("Monitor 24, 600.0, 6, 15\n");
+                bw.write("Teclado Gamer, 150.0, 12, 0\n");
+                System.out.println("[INFO] Se ha creado un archivo '" + ruta + "' de ejemplo para la prueba.");
+            } catch (IOException e) {
+                System.out.println("Error creando archivo de prueba: " + e.getMessage());
+            }
+        }
+    }
+}

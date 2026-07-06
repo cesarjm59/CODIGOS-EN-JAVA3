@@ -1,0 +1,31 @@
+import java.util.Scanner;
+class CARACTERES{
+    public static String ordenarBurbuja(String texto) {
+        char[] caracteres = texto.toCharArray();
+        int n = caracteres.length;
+
+        for (int i = 0; i < n - 1; i++) {
+            for (int j = 0; j < n - i - 1; j++) {
+
+                if (caracteres[j] > caracteres[j + 1]) {
+                    char temporal = caracteres[j];
+                    caracteres[j] = caracteres[j + 1];
+                    caracteres[j + 1] = temporal;
+                }
+            }
+        }
+        return new String(caracteres);
+    }
+
+    public static void main(String[] args) {
+        Scanner consola = new Scanner(System.in);
+
+        System.out.print("Ingrese una palabra o texto para ordenar: ");
+        String entrada = consola.nextLine();
+
+        String resultado = ordenarBurbuja(entrada);
+
+        System.out.println("\nTexto original: " + entrada);
+        System.out.println("Texto ordenado alfabéticamente: " + resultado);
+    }
+}

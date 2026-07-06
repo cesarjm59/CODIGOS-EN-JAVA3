@@ -1,0 +1,58 @@
+import java.util.Scanner; 
+public class QUICKSORT {
+    public static void main(String[] args) {
+        Scanner scanner = new Scanner(System.in);
+
+        System.out.println("--- ORDENAMIENTO RECURSIVO CON QUICKSORT ---");
+        System.out.print("Ingrese la cantidad de elementos que tendrá el vector: ");
+        int tamano = scanner.nextInt();
+        int[] vector = new int[tamano];
+
+        System.out.println("\n--- Ingrese los elementos del vector ---");
+        for (int i = 0; i < tamano; i++) {
+            System.out.print("Elemento en la posición [" + i + "]: ");
+            vector[i] = scanner.nextInt(); 
+        }
+        System.out.println("\nVector original:");
+        imprimirVector(vector);
+        quickSort(vector, 0, vector.length - 1);
+
+        System.out.println("\nVector ordenado con QuickSort:");
+        imprimirVector(vector);
+
+        scanner.close();
+    }
+    public static void quickSort(int[] arr, int bajo, int alto) {
+        if (bajo < alto) {
+            int indicePivote = particion(arr, bajo, alto);
+            quickSort(arr, bajo, indicePivote - 1); 
+            quickSort(arr, indicePivote + 1, alto); 
+        }
+    }
+
+    public static int particion(int[] arr, int bajo, int alto) {
+        int pivote = arr[alto]; 
+        int i = (bajo - 1); 
+
+        for (int j = bajo; j < alto; j++) {
+            if (arr[j] <= pivote) {
+                i++;
+                int temp = arr[i];
+                arr[i] = arr[j];
+                arr[j] = temp;
+            }
+        }
+        int temp = arr[i + 1];
+        arr[i + 1] = arr[alto];
+        arr[alto] = temp;
+
+        return i + 1;
+    }
+
+    public static void imprimirVector(int[] arr) {
+        for (int num : arr) {
+            System.out.print(num + " ");
+        }
+        System.out.println();
+    }
+}

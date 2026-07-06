@@ -1,0 +1,64 @@
+import java.util.Scanner;
+class MULTIPLICACION_MATRICES {
+    public static void main(String[] args) {
+        Scanner consola = new Scanner(System.in);
+        int n;
+
+        System.out.print("Ingrese el tamaño 'n' para sus matrices cuadradas (nxn): ");
+        n = consola.nextInt();
+
+        int[][] matrizA = new int[n][n];
+        int[][] matrizB = new int[n][n];
+        int[][] resultado = new int[n][n];
+
+        System.out.println("\n== Ingrese los valores de la Matriz A ==");
+        for (int i = 0; i < n; i++) {
+            for (int j = 0; j < n; j++) {
+                System.out.print("Matriz A [" + i + "][" + j + "]: ");
+                matrizA[i][j] = consola.nextInt();
+            }
+        }
+
+        System.out.println("\n== Ingrese los valores de la Matriz B ==");
+        for (int i = 0; i < n; i++) {
+            for (int j = 0; j < n; j++) {
+                System.out.print("Matriz B [" + i + "][" + j + "]: ");
+                matrizB[i][j] = consola.nextInt();
+            }
+        }
+
+        System.out.println("\n== Matriz A ==");
+        for (int i = 0; i < n; i++) {
+            for (int j = 0; j < n; j++) {
+                System.out.print(matrizA[i][j] + "\t");
+            }
+            System.out.println();
+        }
+
+        System.out.println("\n== Matriz B ==");
+        for (int i = 0; i < n; i++) {
+            for (int j = 0; j < n; j++) {
+                System.out.print(matrizB[i][j] + "\t");
+            }
+            System.out.println();
+        }
+        System.out.println();
+
+        for (int i = 0; i < n; i++) {
+            for (int j = 0; j < n; j++) {
+                resultado[i][j] = 0;
+                for (int k = 0; k < n; k++) {
+                    resultado[i][j] += matrizA[i][k] * matrizB[k][j];
+                }
+            }
+        }
+
+        System.out.println("\nLa Matriz Resultante (A x B) es: ");
+        for (int i = 0; i < n; i++) {
+            for (int j = 0; j < n; j++) {
+                System.out.print(resultado[i][j] + "\t");
+            }
+            System.out.println();
+        }
+    }
+}

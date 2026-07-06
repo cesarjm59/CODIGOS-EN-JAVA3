@@ -1,0 +1,139 @@
+import java.io.*;
+import java.util.ArrayList;
+import java.util.Scanner;
+class SistemaGestionUNMSM {
+    public static class Producto {
+        String nombre;
+        double precio;
+        int cantidad;
+        double ahorro;
+    }
+
+    public static boolean verificarLogin(String userInput, String passInput) {
+        File archivoUsuarios = new File("usuarios.txt");
+        if (!archivoUsuarios.exists()) {
+            System.err.println("Error: No se pudo encontrar la base de datos usuarios.txt");
+            return false;
+        }
+
+            while (lectorDb.hasNext()) {
+                String userDb = lectorDb.next();
+                if (!lectorDb.hasNext()) break; 
+                String passDb = lectorDb.next();
+
+                if (userDb.equals(userInput) && passDb.equals(passInput)) {
+                    return true;
+                }
+            }
+        } catch (FileNotFoundException e) {
+            System.err.println("Error al abrir el archivo de usuarios.");
+        }
+        return false;
+    }
+
+    public static void main(String[] args) {
+        Scanner teclado = new Scanner(System.in);
+
+        String inputUsuario, inputPassword;
+        System.out.println("---AUTENTICACION REQUERIDA---");
+        System.out.print("Usuario: ");
+        inputUsuario = teclado.next();
+        System.out.print("Contrasena: ");
+        inputPassword = teclado.next();
+
+        if (!verificarLogin(inputUsuario, inputPassword)) {
+            System.out.println("\n[!] Acceso denegado. Credenciales incorrectas o usuario no registrado.");
+            teclado.close();
+            return; 
+        }
+
+        System.out.println("\n[Acceso concedido]\n");
+        teclado.nextLine(); 
+
+        String nombreUsuario;
+        int edadUsuario;
+        System.out.println("---SISTEMA DE GESTION UNMSM---");
+        System.out.print("Ingrese su nombre completo: ");
+        nombreUsuario = teclado.nextLine();
+
+        System.out.print("Ingrese su edad: ");
+        edadUsuario = teclado.nextInt();
+
+        System.out.println("\n[Bienvenido, " + nombreUsuario + ". Procesando datos...]");
+
+        File archivoEntrada = new File("productos.txt");
+        if (!archivoEntrada.exists()) {
+            System.err.println("Error: No se pudo encontrar productos.txt");
+            teclado.close();
+            return;
+        }
+
+        ArrayList<Producto> lista = new ArrayList<>();
+        double ahorroTotal = 0.0;
+        double sumaTotalGastado = 0.0;
+
+        try (Scanner entrada = new Scanner(archivoEntrada);
+             BufferedWriter salida = new BufferedWriter(new FileWriter("productos_descuento.txt"));
+             BufferedWriter reporte = new BufferedWriter(new FileWriter("beneficios.txt"))) {
+
+            if (entrada.hasNext()) entrada.next(); 
+            if (entrada.hasNext()) entrada.next(); 
+            if (entrada.hasNext()) entrada.next(); 
+
+            while (entrada.hasNext()) {
+                Producto p = new Producto();
+                p.nombre = entrada.next();
+                
+                if (!entrada.hasNextDouble()) break;
+                p.precio = entrada.nextDouble();
+                
+                if (!entrada.hasNextInt()) break;
+                p.cantidad = entrada.nextInt();
+                
+                p.ahorro = 0.0;
+
+                if (p.cantidad > 5) {
+                    double descuentoUnitario = p.precio * 0.1;
+                    p.precio -= descuentoUnitario;
+                    p.ahorro = descuentoUnitario * p.cantidad;
+                }
+                lista.add(p);
+            }
+
+            salida.write(String.format("%-15s%-10s%-10sTOTAL_GASTADO\n", "NOMBRE", "PRECIO", "CANTIDAD"));
+            salida.write("------------------------------------------------\n");
+
+            reporte.write("REPORTE DE BENEFICIOS\n");
+            reporte.write("Usuario: " + nombreUsuario + " | Edad: " + edadUsuario + "\n");
+            reporte.write("----------------------\n");
+
+            for (Producto prod : lista) {
+                double totalGastado = prod.precio * prod.cantidad;
+                sumaTotalGastado += totalGastado;
+
+                salida.write(String.format("%-15s%-10.2f%-10dS/. %.2f\n", 
+                        prod.nombre, prod.precio, prod.cantidad, totalGastado));
+
+                if (prod.ahorro > 0) {
+                    reporte.write(String.format("%s | Ahorro total: S/. %.2f\n", prod.nombre, prod.ahorro));
+                    ahorroTotal += prod.ahorro;
+                } else {
+                    reporte.write(prod.nombre + " | Sin descuento.\n");
+                }
+            }
+
+            salida.write("------------------------------------------------\n");
+            salida.write(String.format("SUMA TOTAL GASTADO: S/. %.2f\n", sumaTotalGastado));
+
+            reporte.write("----------------------\n");
+            reporte.write(String.format("AHORRO TOTAL GENERAL: S/. %.2f\n", ahorroTotal));
+
+            System.out.println("\nProceso terminado. Revisa 'productos_descuento.txt' y 'beneficios.txt'.");
+
+        } catch (IOException e) {
+            System.err.println("Error durante el procesamiento de los reportes: " + e.getMessage());
+        } finally {
+            teclado.close();
+        }
+    }
+}

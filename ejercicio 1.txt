@@ -1,0 +1,31 @@
+import java.util.Scanner;
+class SUMA_DE_ELMENTOS_VECTOR{
+    public static void main(String[] args) {
+        Scanner consola = new Scanner(System.in);
+        int n;
+        int suma=0;
+
+        System.out.println("Ingrese la cantidad de elementos para su vector:");
+        n= consola.nextInt();
+        int[] a = new int[n];
+
+        System.out.println("\nIngrese los datos para su vector");
+
+        for(int i=0; i<n; i++){
+            System.out.println("Vector [" + i + "]: ");
+            a[i]=consola.nextInt();
+            suma += a[i];
+        }
+        System.out.println();
+
+        System.out.println("Su vector es: ");
+        for (int elementos : a) {
+            System.out.print( elementos );
+        }
+        System.out.println();
+
+        System.out.println("\nLa suma de los datos es: ");
+        System.out.println(suma);
+
+    }
+}

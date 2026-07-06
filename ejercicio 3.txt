@@ -1,0 +1,48 @@
+import java.util.Scanner;
+class MATRIZ_IDENTIDAD{
+    public static void main(String[] args) {
+        Scanner consola = new Scanner(System.in);
+        int n;
+
+        System.out.println("Ponga el tamaño de su matriz(nxn): ");
+        n = consola.nextInt();
+
+        int[][] matriz=new int[n][n];
+
+        for(int i=0;i<n;i++){
+            for(int j=0;j<n;j++){
+                System.out.println("Posicion ["+i+"]"+"["+j+"]"+ ": " );
+                matriz[i][j]= consola.nextInt();
+            }
+        }
+
+        System.out.println("\nSu Matriz original es: ");
+        for (int i = 0; i < n; i++) {
+            for (int j = 0; j < n; j++) {
+                System.out.print(matriz[i][j] + "\t");
+            }
+            System.out.println();
+        }
+
+        /// 3. CONVERSIÓN A MATRIZ IDENTIDAD
+        // Recorremos cada posición y transformamos sus valores
+        for (int i = 0; i < n; i++) {
+            for (int j = 0; j < n; j++) {
+                if (i == j) {
+                    matriz[i][j] = 1;
+                } else {
+                    matriz[i][j] = 0;
+                }
+            }
+        }
+
+        System.out.println("\nSu Matriz convertida a Identidad es: ");
+        for (int i = 0; i < n; i++) {
+            for (int j = 0; j < n; j++) {
+                System.out.print(matriz[i][j] + "\t");
+            }
+            System.out.println();
+        }
+        System.out.println();
+    }
+}

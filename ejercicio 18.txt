@@ -1,0 +1,54 @@
+import java.util.Scanner;
+public class Main {
+    public static int[][] crearMatriz(int filas, int columnas) {
+        int[][] matriz = new int[filas][columnas];
+        return matriz;
+    }
+
+    public static void llenarMatriz(int[][] matriz, int filas, int columnas, Scanner scanner) {
+        System.out.println("\n--- Introduzca los valores de la matriz ---");
+        for (int i = 0; i < filas; i++) {
+            for (int j = 0; j < columnas; j++) {
+                System.out.print("Matriz[" + i + "][" + j + "]: ");
+                matriz[i][j] = scanner.nextInt();
+            }
+        }
+    }
+
+    public static void mostrarMatriz(int[][] matriz, int filas, int columnas) {
+        System.out.println("\n=== MATRIZ IMPRESA DESDE MEMORIA DINAMICA ===");
+        for (int i = 0; i < filas; i++) {
+            System.out.print("[ ");
+            for (int j = 0; j < columnas; j++) {
+                System.out.format("%4d ", matriz[i][j]);
+            }
+            System.out.println(" ]");
+        }
+    }
+
+    public static void main(String[] args) {
+        Scanner scanner = new Scanner(System.in);
+        int filas = 0, columnas = 0;
+
+        System.out.println("=== MATRICES DINAMICAS EN JAVA ===");
+        System.out.print("Ingrese el numero de filas: ");
+        filas = scanner.nextInt();
+        System.out.print("Ingrese el numero de columnas: ");
+        columnas = scanner.nextInt();
+
+        if (filas <= 0 || columnas <= 0) {
+            System.out.println("[ERROR] Las dimensiones deben ser mayores a cero.");
+            return;
+        }
+        int[][] miMatriz = crearMatriz(filas, columnas);
+
+        llenarMatriz(miMatriz, filas, columnas, scanner);
+
+        mostrarMatriz(miMatriz, filas, columnas);
+
+        miMatriz = null; 
+        System.out.println("\n[INFO] La referencia fue desvinculada. El Garbage Collector liberara la memoria.");
+        
+        scanner.close();
+    }
+}

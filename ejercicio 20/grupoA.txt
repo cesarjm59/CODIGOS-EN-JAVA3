@@ -1,0 +1,6 @@
+Carlos Mendoza, 15.0, 16.5, 14.0
+Diana Espinoza, 11.5, 12.0, 10.5
+Mateo Quispe, 19.0, 18.5, 20.0
+Elena Barrientos, 13.0, 14.5, 12.0
+Renato Flores, 17.0, 16.0, 18.5
+Vanesa Jiron, 08.5, 11.0, 10.0

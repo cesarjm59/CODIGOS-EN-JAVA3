@@ -1,0 +1,5 @@
+nombre precio cantidad
+Laptop 3500 2
+Mouse 50 10
+Teclado 120 5
+Impresora 900 2

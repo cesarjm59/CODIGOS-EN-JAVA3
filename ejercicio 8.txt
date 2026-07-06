@@ -1,0 +1,45 @@
+import java.util.Scanner;
+class MATRIZ_SUXSTAPUESTA{
+    public static void main(String[] args) {
+        Scanner consola = new Scanner(System.in);
+        int n, m;
+        
+        System.out.print("Ingrese el número de filas (n): ");
+        n = consola.nextInt();
+        System.out.print("Ingrese el número de columnas (m): ");
+        m = consola.nextInt();
+
+        int[][] matrizOriginal = new int[n][m];
+        int[][] matrizTranspuesta = new int[m][n];
+        
+        System.out.println("\n===Ingrese los valores de su matriz===");
+        for (int i = 0; i < n; i++) {
+            for (int j = 0; j < m; j++) {
+                System.out.print("Posición [" + i + "][" + j + "]: ");
+                matrizOriginal[i][j] = consola.nextInt();
+            }
+        }
+
+        System.out.println("\nMatriz Original (" + n + "x" + m + "):");
+        for (int i = 0; i < n; i++) {
+            for (int j = 0; j < m; j++) {
+                System.out.print(matrizOriginal[i][j] + "\t");
+            }
+            System.out.println(); 
+        }
+        
+        for (int i = 0; i < n; i++) {
+            for (int j = 0; j < m; j++) {
+                matrizTranspuesta[j][i] = matrizOriginal[i][j];
+            }
+        }
+        
+        System.out.println("\nMatriz Transpuesta (" + m + "x" + n + "):");
+        for (int i = 0; i < m; i++) { 
+            for (int j = 0; j < n; j++) { 
+                System.out.print(matrizTranspuesta[i][j] + "\t");
+            }
+            System.out.println();
+        }
+    }
+}

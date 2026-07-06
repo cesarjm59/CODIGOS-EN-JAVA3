@@ -1,0 +1,40 @@
+import java.util.Scanner;
+class PROMEDIO_DE_NOTAS_VECTOR{
+    public static void main(String[] args) {
+        Scanner consola = new Scanner(System.in);
+        int n;
+        int suma=0;
+
+
+        System.out.println("Ingrese la cantidad de elementos para su vector:");
+        n= consola.nextInt();
+        int[] a = new int[n];
+
+        System.out.println("\nIngrese las notas en su vector");
+
+        for(int i=0; i<n; i++){
+            System.out.println("Vector [" + i + "]: ");
+            while(true) {
+                int nota = consola.nextInt();
+
+                suma += a[i];
+                if (nota >=0 && nota <= 20){
+                    a[i]=nota;
+                    suma +=a[i];
+                    break;
+                } else {
+                    System.out.println("La nota debe estar entre 0 y 20. Intente de nuevo.\n");
+                }
+            }
+        }
+
+        System.out.println("\nSu vector es:");
+        for (int elemento: a){
+            System.out.println(elemento);
+        }
+
+        float promedio = suma/n;
+        System.out.println("\nEl promedio de las notas son: ");
+        System.out.println(promedio);
+    }
+}

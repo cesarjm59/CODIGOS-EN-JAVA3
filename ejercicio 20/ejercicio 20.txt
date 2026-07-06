@@ -1,0 +1,146 @@
+import java.io.*;
+import java.util.ArrayList;
+import java.util.Comparator;
+
+class SistemaCalificaciones {
+    public static class Estudiante {
+        String nombre;
+        double nota1, nota2, nota3;
+        double promedio;
+
+        public Estudiante(String nombre, double nota1, double nota2, double nota3) {
+            this.nombre = nombre;
+            this.nota1 = nota1;
+            this.nota2 = nota2;
+            this.nota3 = nota3;
+            this.promedio = (nota1 + nota2 + nota3) / 3.0;
+            
+        }
+
+        public String obtenerLineaFormateada() {
+            return String.format("%-18s | %-5.1f | %-5.1f | %-5.1f | Promedio: %-5.2f", 
+                    nombre, nota1, nota2, nota3, promedio);
+                    
+        }
+    }
+
+    public static void main(String[] args) {
+        String archivoA = "grupoA.txt";
+        String archivoB = "grupoB.txt";
+        String archivoTercio = "tercio_superior.txt";
+
+        System.out.println("=== SISTEMA DE CALIFICACIONES REAL DESDE ARCHIVOS ===");
+        ArrayList<Estudiante> grupoA = leerEstudiantesDesdeArchivo(archivoA);
+        ArrayList<Estudiante> grupoB = leerEstudiantesDesdeArchivo(archivoB);
+        if (grupoA.isEmpty() && grupoB.isEmpty()) {
+            System.out.println("[!] Deteniendo el programa. Asegúrate de crear 'grupoA.txt' y 'grupoB.txt' con datos.");
+            return;
+        }
+        
+        grupoA.sort(Comparator.comparingDouble((Estudiante e) -> e.promedio).reversed());
+        grupoB.sort(Comparator.comparingDouble((Estudiante e) -> e.promedio).reversed());
+
+        System.out.println("\n>>> ARCHIVO 1: GRUPO A (Ordenado por Orden de Mérito):");
+        imprimirGrupoEnConsola(grupoA);
+
+        System.out.println("\n>>> ARCHIVO 2: GRUPO B (Ordenado por Orden de Mérito):");
+        imprimirGrupoEnConsola(grupoB);
+
+        ArrayList<Estudiante> tercioGrupoA = obtenerTercioSuperior(grupoA);
+        ArrayList<Estudiante> tercioGrupoB = obtenerTercioSuperior(grupoB);
+
+        generarArchivoTercioSuperior(archivoTercio, "Grupo A", tercioGrupoA, "Grupo B", tercioGrupoB);
+
+        mostrarArchivoFinalEnConsola(archivoTercio);
+    }
+
+    public static ArrayList<Estudiante> leerEstudiantesDesdeArchivo(String rutaArchivo) {
+        ArrayList<Estudiante> lista = new ArrayList<>();
+        File archivo = new File(rutaArchivo);
+
+        if (!archivo.exists()) {
+            System.out.println("[ALERTA] No se encontró el archivo físico: " + rutaArchivo);
+            return lista;
+        }
+        
+        try (BufferedReader lector = new BufferedReader(new FileReader(archivo))) {
+            String linea;
+            while ((linea = lector.readLine()) != null) {
+                if (linea.trim().isEmpty()) continue; 
+                String[] partes = linea.split(",");
+                if (partes.length == 4) {
+                    String nombre = partes[0].trim();
+                    double n1 = Double.parseDouble(partes[1].trim());
+                    double n2 = Double.parseDouble(partes[2].trim());
+                    double n3 = Double.parseDouble(partes[3].trim());
+                    lista.add(new Estudiante(nombre, n1, n2, n3));
+                    
+                }
+            }
+        } catch (IOException e) {
+            System.out.println("[ERROR] Error al leer el archivo " + rutaArchivo + ": " + e.getMessage());
+        }
+        return lista;
+    }
+
+    public static ArrayList<Estudiante> obtenerTercioSuperior(ArrayList<Estudiante> listaOrdenada) {
+        ArrayList<Estudiante> tercio = new ArrayList<>();
+        int cantidadTercio = listaOrdenada.size() / 3;
+        if (cantidadTercio == 0 && !listaOrdenada.isEmpty()) {
+            cantidadTercio = 1;
+        }
+        for (int i = 0; i < cantidadTercio; i++) {
+            tercio.add(listaOrdenada.get(i));
+        }
+        return tercio;
+    }
+
+    public static void imprimirGrupoEnConsola(ArrayList<Estudiante> lista) {
+        if (lista.isEmpty()) {
+            System.out.println("(El archivo está vacío o no tiene el formato correcto)");
+            return;
+        }
+        System.out.println("-------------------------------------------------------------------");
+        System.out.format("%-6s | %-18s | %-5s | %-5s | %-5s | %-5s\n", "MERITO", "ESTUDIANTE", "N1", "N2", "N3", "PROM");
+        System.out.println("-------------------------------------------------------------------");
+        int puesto = 1;
+        for (Estudiante e : lista) {
+            System.out.format("  #%-4d | %s\n", puesto++, e.obtenerLineaFormateada());
+        }
+        System.out.println("-------------------------------------------------------------------");
+    }
+
+    public static void generarArchivoTercioSuperior(String ruta, String nomA, ArrayList<Estudiante> tA, String nomB, ArrayList<Estudiante> tB) {
+        try (BufferedWriter escritor = new BufferedWriter(new FileWriter(ruta))) {
+            escritor.write("=======================================================\n");
+            escritor.write("        REPORTE OFICIAL: FILTRADO DE TERCIO SUPERIOR   \n");
+            escritor.write("=======================================================\n\n");
+
+            escritor.write("--- PERTENECEN AL TERCIO SUPERIOR DEL " + nomA.toUpperCase() + " ---\n");
+            for (Estudiante e : tA) {
+                escritor.write(String.format("Estudiante: %-20s -> Promedio Final: %.2f\n", e.nombre, e.promedio));
+            }
+
+            escritor.write("\n--- PERTENECEN AL TERCIO SUPERIOR DEL " + nomB.toUpperCase() + " ---\n");
+            for (Estudiante e : tB) {
+                escritor.write(String.format("Estudiante: %-20s -> Promedio Final: %.2f\n", e.nombre, e.promedio));
+            }
+            escritor.write("\n=======================================================\n");
+            System.out.println("\n[OK] ¡Archivo '" + ruta + "' generado con éxito basándose en tus datos!");
+        } catch (IOException e) {
+            System.out.println("[ERROR] Error al guardar el archivo del tercio superior: " + e.getMessage());
+        }
+    }
+
+    public static void mostrarArchivoFinalEnConsola(String ruta) {
+        System.out.println("\n>>> MOSTRANDO ARCHIVO 3: CONTENIDO GENERADO EN '" + ruta + "':");
+        try (BufferedReader br = new BufferedReader(new FileReader(ruta))) {
+            String linea;
+            while ((linea = br.readLine()) != null) {
+                System.out.println(linea);
+            }
+        } catch (IOException e) {
+            System.out.println("[ERROR] No se pudo leer el archivo final del tercio superior.");
+        }
+    }
+}

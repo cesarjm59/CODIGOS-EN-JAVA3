@@ -1,0 +1,65 @@
+import java.util.Scanner;
+import java.util.ArrayList;
+import java.util.Collections;
+public class Main {
+    public static void main(String[] args) {
+        Scanner scanner = new Scanner(System.in);
+        System.out.println("--- ORDENAMIENTO CONDICIONAL (PARES E IMPARES) ---");
+        System.out.print("Ingrese la cantidad de elementos del vector: ");
+        int tamano = scanner.nextInt();
+
+        int[] vector = new int[tamano];
+
+        System.out.println("\n--- Ingrese los elementos del vector ---");
+        for (int i = 0; i < tamano; i++) {
+            System.out.print("Elemento [" + i + "]: ");
+            vector[i] = scanner.nextInt();
+        }
+
+        System.out.println("\nVector original:");
+        imprimirVector(vector);
+
+        ordenarParesImpares(vector);
+
+        System.out.println("\nVector ordenado según las reglas:");
+        imprimirVector(vector);
+
+        scanner.close();
+    }
+
+    public static void ordenarParesImpares(int[] arr) {
+        ArrayList<Integer> pares = new ArrayList<>();
+        ArrayList<Integer> impares = new ArrayList<>();
+
+        for (int num : arr) {
+            if (num % 2 == 0) {
+                pares.add(num);
+            } else {
+                impares.add(num);
+            }
+        }
+
+        Collections.sort(pares);
+        
+        Collections.sort(impares, Collections.reverseOrder());
+
+        int indice = 0;
+
+        for (int num : pares) {
+            arr[indice] = num;
+            indice++;
+        }
+
+        for (int num : impares) {
+            arr[indice] = num;
+            indice++;
+        }
+    }
+
+    public static void imprimirVector(int[] arr) {
+        for (int num : arr) {
+            System.out.print(num + " ");
+        }
+        System.out.println();
+    }
+}

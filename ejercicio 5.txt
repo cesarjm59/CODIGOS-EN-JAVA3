@@ -1,0 +1,24 @@
+import java.util.Scanner;
+class FUNCION_FACTORIAL{
+    public static long Factorial_Cal(int a){
+        long factorial=1;
+        for(int i=1;i<=a;i++){
+            factorial*=i;
+        }
+        return factorial;
+    }
+    public static void main(String[] args) {
+        Scanner consola = new Scanner(System.in);
+        int n;
+
+        System.out.println("Ingrese un numero:");
+        n = consola.nextInt();
+
+        if (n == 0) {
+            System.out.println("El factorial de " + n + " es: " + " 1 ");
+        } else {
+            long producto = Factorial_Cal(n);
+            System.out.println("El factorial de " + n + " es: " + producto);
+        }
+    }
+}
